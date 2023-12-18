@@ -1,6 +1,6 @@
 import { NavLink, Navigate, Outlet } from "react-router-dom";
 import { FaBell } from "react-icons/fa";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import axiosClient from "../../axios";
 import { setCurrentUserFunc } from "../../redux/UserSlice";
@@ -33,6 +33,12 @@ export default function DefaultLatyout() {
 
         })
     }
+
+    useEffect(() => {
+        axiosClient.get('/me').then(({ data }) => {
+            dispatch(setCurrentUserFunc(data))
+        })
+    }, []);
 
     return (
         <div>

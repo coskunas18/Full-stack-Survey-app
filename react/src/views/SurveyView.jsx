@@ -38,6 +38,26 @@ export default function SurveyView() {
     }
 
 
+    const addQuestion = () => {
+        survey.questions.push({
+            id: uuidv4(),
+            type: "text",
+            question: "",
+            description: "",
+            data: {},
+        });
+        setSurvey({ ...survey });
+    };
+
+
+    const onQuestionsUpdate = (questions) => {
+        setSurvey({
+            ...survey,
+            questions,
+        });
+    }
+
+
 
     const onSubmit = (ev) => {
         ev.preventDefault();
@@ -142,7 +162,10 @@ export default function SurveyView() {
                             {/*Active*/}
 
                             {/*Survey Questions */}
-                            <SurveyQuestions />
+                            <button type="button" onClick={addQuestion}>
+                                Add question
+                            </button>
+                            <SurveyQuestions questions={survey.questions} onQuestionsUpdate={onQuestionsUpdate} />
                             {/*Survey Questions */}
 
 

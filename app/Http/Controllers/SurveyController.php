@@ -8,7 +8,7 @@ use App\Http\Requests\StoreSurveyRequest;
 use App\Http\Requests\UpdateSurveyRequest;
 use App\Http\Resources\SurveyResource;
 use App\Models\SurveyQuestion;
-use GuzzleHttp\Psr7\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
@@ -19,15 +19,17 @@ use Illuminate\Support\Facades\Validator;
 class SurveyController extends Controller
 {
 
+
     public function index(Request $request)
     {
         $user = $request->user();
 
         return SurveyResource::collection(
-            Survey::where('user_id', $user->id)->orderBy('created_at', 'desc')->paginate(10)
+            Survey::where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->paginate(2)
         );
     }
-
 
     public function store(StoreSurveyRequest $request)
     {
@@ -154,12 +156,19 @@ class SurveyController extends Controller
     private function createQuestion($data)
     {
         if (is_array($data['data'])) {
-            $data['data'] = json_decode($data['data']);
+            $data['data'] = json_encode($data['data']);
         }
 
         $validator = Validator::make($data, [
             'question' => 'required|string',
-            'type' => ['required', new Enum(QuestionTypeEnum::class)],
+            'type' => ['required', Rule::in(
+                QuestionTypeEnum::Text->value,
+                QuestionTypeEnum::Textarea->value,
+                QuestionTypeEnum::Select->value,
+                QuestionTypeEnum::Radio->value,
+                QuestionTypeEnum::Checkbox->value,
+
+            )],
             'description' => 'nullable|string',
             'data' => 'present',
             'survey_id' => 'exists:App\Models\Survey,id'
@@ -177,7 +186,14 @@ class SurveyController extends Controller
         $validator = Validator::make($data, [
             'id' => 'exists:App\Models\SurveyQuestion,id',
             'question' => 'required|string',
-            'type' => ['required', new Enum(QuestionTypeEnum::class)],
+            'type' =>  ['required', Rule::in(
+                QuestionTypeEnum::Text->value,
+                QuestionTypeEnum::Textarea->value,
+                QuestionTypeEnum::Select->value,
+                QuestionTypeEnum::Radio->value,
+                QuestionTypeEnum::Checkbox->value,
+
+            )],
             'description' => 'nullable|string',
             'data' => 'present'
         ]);
