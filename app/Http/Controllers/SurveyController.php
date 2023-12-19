@@ -27,7 +27,7 @@ class SurveyController extends Controller
         return SurveyResource::collection(
             Survey::where('user_id', $user->id)
                 ->orderBy('created_at', 'desc')
-                ->paginate(2)
+                ->paginate(5)
         );
     }
 
@@ -35,10 +35,13 @@ class SurveyController extends Controller
     {
         $data = $request->validated();
 
+
         if (isset($data['image'])) {
             $relativePath = $this->saveImage($data['image']);
             $data['image'] = $relativePath;
         }
+
+
 
         $survey = Survey::create($data);
 
@@ -124,10 +127,14 @@ class SurveyController extends Controller
 
     private function saveImage($image)
     {
+        // Check if image is valid base64 string
         if (preg_match('/^data:image\/(\w+);base64,/', $image, $type)) {
+            // Take out the base64 encoded text without mime type
             $image = substr($image, strpos($image, ',') + 1);
-            $type = strtolower($type[1]);
+            // Get file extension
+            $type = strtolower($type[1]); // jpg, png, gif
 
+            // Check if file is an image
             if (!in_array($type, ['jpg', 'jpeg', 'gif', 'png'])) {
                 throw new \Exception('invalid image type');
             }
@@ -145,12 +152,12 @@ class SurveyController extends Controller
         $file = Str::random() . '.' . $type;
         $absolutePath = public_path($dir);
         $relativePath = $dir . $file;
-
         if (!File::exists($absolutePath)) {
             File::makeDirectory($absolutePath, 0755, true);
         }
-
         file_put_contents($relativePath, $image);
+
+        return $relativePath;
     }
 
     private function createQuestion($data)

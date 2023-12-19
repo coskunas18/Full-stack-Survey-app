@@ -11,7 +11,7 @@ export default function SurveyListItem({ survey, onDeleteClick }) {
             <h4>{survey.title}</h4>
             <div dangerouslySetInnerHTML={{ __html: survey.description }} className="overflow-hidden flex-1"></div>
             <div className="flex justify-between items-center mt-3">
-                <TButton to={`surveys/${survey.id}`}>
+                <TButton to={`/surveys/${survey.id}`}>
                     <BsPencilSquare size={24} />
                 </TButton>
                 <div className="flex items-center">

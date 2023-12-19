@@ -77,7 +77,7 @@ export default function QuestionEditor({ index = 0, question, addQuestion, delet
                 </label>
                 <textarea name="questionDescription" id="questionDescription"
                     className="resize-none w-full h-20 p-2 rounded"
-                    value={model.description} onChange={(ev) => setModel({ ...model, description: ev.target.value })}
+                    value={model.description || ''} onChange={(ev) => setModel({ ...model, description: ev.target.value })}
                     cols="30" rows="10"></textarea>
             </div>
             {/*Description*/}
