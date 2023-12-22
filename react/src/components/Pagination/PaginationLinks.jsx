@@ -21,16 +21,20 @@ export default function PaginationLinks({ meta, onPageClick }) {
                 <div className='flex justify-center font-semibold'>
                     Showing {meta.from} to {meta.to} of {meta.total}
                 </div>
-                <div className='flex justify-center item-center gap-3 mt-3 '>
-                    {meta.links && meta.links.map((link, index) => (
-                        <a onClick={ev => onClick(ev, link)} href="#" aria-current="page" key={index}
-                            className={link.active ? "bg-slate-700 text-white border-2 px-2 cursor-pointer"
-                                : 'border-2 px-2 hover:bg-slate-300 cursor-pointer'}
-                            dangerouslySetInnerHTML={{ __html: link.label }}
-                        >
-                        </a>
-                    ))}
-                </div>
+
+                {meta.total > meta.per_page && (
+                    <div className='flex justify-center item-center gap-3 mt-3 '>
+                        {meta.links && meta.links.map((link, index) => (
+                            <a onClick={ev => onClick(ev, link)} href="#" aria-current="page" key={index}
+                                className={link.active ? "bg-slate-700 text-white border-2 px-2 cursor-pointer"
+                                    : 'border-2 px-2 hover:bg-slate-300 cursor-pointer'}
+                                dangerouslySetInnerHTML={{ __html: link.label }}
+                            >
+                            </a>
+                        ))}
+                    </div>
+                )}
+
 
             </div>
         </div>

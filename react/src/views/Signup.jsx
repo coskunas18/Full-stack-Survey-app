@@ -28,7 +28,6 @@ export default function Signup() {
 
     const onSubmit = (ev) => {
         ev.preventDefault();
-        console.log(userToken)
         axiosClient.post('/signup', formData).then(({ data }) => {
             dispatch(setCurrentUserFunc(data.user));
             dispatch(setUserTokenFunc(data.token))

@@ -9,13 +9,13 @@ class UpdateSurveyRequest extends FormRequest
     /**
      * Determine if the user is authorized to make this request.
      */
-    public function authorize(): bool
+    public function authorize()
     {
         $survey = $this->route('survey');
         if ($this->user()->id !== $survey->user_id) { //kullanıcının anketi güncelleme yetkisi olup olmadığını kontrol ediyoruz
             return false;
         }
-        return false;
+        return true;
     }
 
     /**
@@ -32,7 +32,7 @@ class UpdateSurveyRequest extends FormRequest
             'status' => 'required|boolean',
             'description' => 'nullable|string',
             'expire_date' => 'nullable|date|after:today',
-            'question' => 'array'
+            'questions' => 'array'
         ];
     }
 }

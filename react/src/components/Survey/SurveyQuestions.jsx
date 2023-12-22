@@ -60,8 +60,11 @@ export default function SurveyQuestions({ questions, onQuestionsUpdate }) {
             </div>
             {myQuestions.length ? (
                 myQuestions.map((q, ind) => (
-                    <QuestionEditor key={q.id} index={ind} question={q} questionChange={questionChange}
-                        addQuestion={addQuestion} deleteQuestion={deleteQuestion} />
+                    <div className="mt-4" key={q.id}>
+                        <QuestionEditor key={q.id} index={ind} question={q} questionChange={questionChange}
+                            addQuestion={addQuestion} deleteQuestion={deleteQuestion} />
+                    </div>
+
                 ))
             ) : (
                 <div className="text-gray-400 text-center py-4">

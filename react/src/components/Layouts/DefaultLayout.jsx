@@ -1,10 +1,15 @@
 import { NavLink, Navigate, Outlet } from "react-router-dom";
 import { FaBell } from "react-icons/fa";
+import { FaUser } from "react-icons/fa";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import axiosClient from "../../axios";
 import { setCurrentUserFunc } from "../../redux/UserSlice";
 import { setUserTokenFunc } from "../../redux/UserSlice";
+import Toast from "../Toast/Toast";
+
+
+
 
 export default function DefaultLatyout() {
     const [menu, setMenu] = useState(false)
@@ -58,7 +63,7 @@ export default function DefaultLatyout() {
                 <div className="flex items-center justify-between">
                     <FaBell size={24} className="text-white hover:text-slate-200" />
                     <div className="relative">
-                        <img onClick={() => setMenu(!menu)} className="w-12 h-12 rounded-full mx-10 active:outline"
+                        <FaUser size={30} onClick={() => setMenu(!menu)} className="text-white mx-5 active:outline"
                             src={currentUser?.imgUrl} />
 
                         {menu && (
@@ -74,6 +79,8 @@ export default function DefaultLatyout() {
                 </div>
             </nav>
             <Outlet />
+
+            <Toast />
         </div>
     )
 }

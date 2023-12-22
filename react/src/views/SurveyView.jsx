@@ -4,9 +4,16 @@ import { useState, useEffect } from "react";
 import axiosClient from "../axios";
 import { useNavigate, useParams } from "react-router-dom";
 import SurveyQuestions from "../components/Survey/SurveyQuestions";
+import { useDispatch } from "react-redux";
+import { setToast } from "../redux/NotificationSlice";
+import TButton from "../components/core/TButton";
+import { FaTrash } from "react-icons/fa";
+import { FaLink } from "react-icons/fa6";
+
 
 export default function SurveyView() {
 
+    const dispatch = useDispatch()
     const navigate = useNavigate();
     const { id } = useParams();
 
@@ -60,7 +67,6 @@ export default function SurveyView() {
             axiosClient.get(`/survey/${id}`).then(({ data }) => {
                 setSurvey(data.data)
                 setLoading(false);
-                console.log(loading)
             })
         }
 
@@ -74,6 +80,10 @@ export default function SurveyView() {
         });
     }
 
+
+    const onDelete = () => {
+
+    }
 
 
     const onSubmit = (ev) => {
@@ -90,18 +100,59 @@ export default function SurveyView() {
         let res = null;
 
         if (id) {
-            axiosClient.put(`/survey/${id}`, payload)
+            res = axiosClient.put(`/survey/${id}`, payload).then(() => {
+
+                dispatch(setToast({
+                    message: 'Survey was update',
+                    show: true
+                }))
+                setTimeout(() => {
+                    dispatch(setToast({
+                        message: '',
+                        show: false
+                    }))
+                }, 3000);
+
+
+            })
         } else {
-            axiosClient.post(`/survey`, payload)
+            res = axiosClient.post(`/survey`, payload).then(() => {
+                dispatch(setToast({
+                    message: 'Survey was created',
+                    show: true
+                }))
+                setTimeout(() => {
+                    dispatch(setToast({
+                        message: '',
+                        show: false
+                    }))
+                }, 3000);
+            })
         }
 
-        res.then(navigate('/surveys')).catch((err) => {
+        res.then(() => navigate('/surveys')).catch((err) => {
             setError(err.response.data.message);
         });
     }
 
+
+
     return (
-        <PageComponent title={"Create New Survey"} className="flex flex-col justify-center ">
+        <PageComponent title={"Create New Survey"} className="flex flex-col justify-center"
+            buttons={
+                <>
+                    <div className="flex gap-3 items-center">
+                        <TButton color="green" href={`/survey/public/${survey.slug}`}>
+                            <FaLink /> Public Link
+                        </TButton>
+                        <TButton color="red" onClick={onDelete} className="flex items-center gap-4">
+                            <FaTrash /> Delete
+                        </TButton>
+                    </div>
+
+                </>
+            }
+        >
             {error && (<div className="bg-red-500 text-white font-semibold text-sm p-4 mt-3 mx-auto w-1/3
              flex justify-center items-center rounded-md">
                 {error}
@@ -212,10 +263,6 @@ export default function SurveyView() {
                     </div>
                 </form>
             )}
-
-
-
-
         </PageComponent>
     )
 }
