@@ -7,6 +7,7 @@ import PublicQuesitonView from "../components/Survey/PublicQuesitonView";
 
 export default function SurveyPublicView() {
     const answers = {};
+    const [surveyFinished, setSurveyFinished] = useState(false);
     const [survey, setSurvey] = useState({
         questions: []
     });
@@ -24,13 +25,20 @@ export default function SurveyPublicView() {
 
 
     function answerChanged(question, value) {
-        answers[question.uuid] = value;
+        answers[question.id] = value;
         console.log(question, value)
     }
 
     function onSubmit(ev) {
         ev.preventDefault();
         console.log(answers)
+
+        axiosClient.post(`/survey/${survey.id}/answer`, {
+            answers
+        }).then((response) => {
+            setSurveyFinished(true);
+        });
+
     }
 
 
@@ -46,10 +54,10 @@ export default function SurveyPublicView() {
 
             {!loading &&
                 (
-                    <>
+                    <div className="h-screen bg-slate-100 m-0 p-2">
                         <form onSubmit={ev => onSubmit(ev)} className="container mx-auto my-5">
                             <div className="flex  flex-wrap justify-start items-center gap-3">
-                                <div className="bg-indigo-300 rounded-md ">
+                                <div className="bg-slate-100 rounded-md ">
                                     <img src={survey.image_url} className="object-cover h-48 w-96" />
                                 </div>
                                 <div className="w-1/3">
@@ -59,26 +67,39 @@ export default function SurveyPublicView() {
                                 </div>
                             </div>
 
-                            <div>
-                                {survey.questions.map((question, index) => (
-                                    <>
-                                        <PublicQuesitonView question={question} index={index}
-                                            key={index} answerChanged={val => answerChanged(question, val)} />
-                                        <hr className="mt-5" />
-                                    </>
 
-                                ))}
+                            {surveyFinished && (
+                                <div className="py-8 px-6 bg-green-600 text-white w-[600px] mx-auto">
+                                    Thank you for participating in the survey
+                                </div>
+                            )}
 
-                            </div>
 
-                            <div className="flex justify-center">
-                                <button type="submit" className="bg-slate-700 px-4 py-2 rounded-md text-white">
-                                    Submit
-                                </button>
-                            </div>
+
+
+                            {!surveyFinished && (
+                                <div>
+                                    <div>
+                                        {survey.questions.map((question, index) => (
+                                            <div key={index}>
+                                                <PublicQuesitonView question={question} index={index}
+                                                    answerChanged={val => answerChanged(question, val)} />
+                                                <hr className="mt-5" />
+                                            </div>
+
+                                        ))}
+
+                                    </div>
+                                    <div className="flex justify-center mt-5">
+                                        <button type="submit" className="bg-slate-700 px-4 py-2 rounded-md text-white">
+                                            Submit
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
 
                         </form>
-                    </>
+                    </div>
                 )
             }
         </div>

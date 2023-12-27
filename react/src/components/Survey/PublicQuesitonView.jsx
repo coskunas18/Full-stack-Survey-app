@@ -5,9 +5,9 @@ export default function PublicQuesitonView({ question, index, answerChanged }) {
 
     function onCheckboxChange(option, $event) {
         if ($event.target.checked) {
-            selectedOptions.push(option.uuid);
+            selectedOptions.push(option.text);
         } else {
-            selectedOptions = selectedOptions.filter(op => op != option.uuid)
+            selectedOptions = selectedOptions.filter(op => op != option.text)
         }
 
         answerChanged(selectedOptions)
@@ -27,7 +27,7 @@ export default function PublicQuesitonView({ question, index, answerChanged }) {
                         <div className="mt-3">
                             <select className="border p-2 rounded-md " onChange={(ev) => answerChanged(ev.target.value)}>
                                 <option value="">Please Select</option>
-                                {question?.data?.option?.map(() => (
+                                {question?.data?.options?.map((option, index) => (
                                     <option key={option.uuid} value={option.text}>
                                         {option.text}
                                     </option>
@@ -38,14 +38,16 @@ export default function PublicQuesitonView({ question, index, answerChanged }) {
 
                     {question.type === "radio" && (
                         <div className="mt-1">
-                            {question?.data?.option?.map(() => (
-                                <div key={option.uuid} value={option.text}>
+                            {question?.data?.options?.map((option, index) => (
+                                <div className="flex gap-2" key={option.uuid} value={option.text}>
                                     <input
                                         id={option.uuid}
+                                        name={"question" + question.id}
+                                        value={option.text}
                                         type="radio"
                                         onChange={(ev) => answerChanged(ev.target.value)}
                                     />
-                                    <label for={option.uuid}>
+                                    <label htmlFor={option.uuid}>
                                         {option.text}
                                     </label>
                                 </div>
@@ -55,14 +57,14 @@ export default function PublicQuesitonView({ question, index, answerChanged }) {
 
                     {question.type === "checkbox" && (
                         <div className="mt-1">
-                            {question?.data?.option?.map(() => (
-                                <div key={option.uuid} value={option.text}>
+                            {question?.data?.options?.map((option, index) => (
+                                <div className="flex gap-2" key={option.uuid} value={option.text}>
                                     <input
                                         id={option.uuid}
                                         type="checkbox"
-                                        onChange={(ev) => answerChanged(ev.target.value)}
+                                        onChange={ev => onCheckboxChange(option, ev)}
                                     />
-                                    <label for={option.uuid}>
+                                    <label htmlFor={option.uuid}>
                                         {option.text}
                                     </label>
                                 </div>
@@ -74,7 +76,7 @@ export default function PublicQuesitonView({ question, index, answerChanged }) {
                         <div className="mt-1">
                             <input type="text"
                                 onChange={(ev) => answerChanged(ev.target.value)}
-                                className="border rounded outline-none px-2" />
+                                className="border rounded outline-none px-2 " />
                         </div>
                     )}
 
